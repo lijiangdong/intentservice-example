@@ -1,7 +1,6 @@
 package com.example.ljd.intentservice;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
@@ -11,23 +10,24 @@ import org.greenrobot.eventbus.EventBus;
 
 public class MyIntentService extends IntentService {
 
-    private static final String ACTION_DOWNLOAD = "com.example.ljd.intentservice.action.DOWNLOAD";
+    private static final String ACTION_COUNTER = "com.example.ljd.intentservice.action.COUNTER";
 
-    private static final String EXTRA_SEC = "com.example.ljd.intentservice.extra.PARAM1";
+    private static final String EXTRA_SEC = "com.example.ljd.intentservice.extra.SECOND";
 
-    private static final int SLEEP_TIME = 100;
+    private static final String EXTRA_TAG = "com.example.ljd.intentservice.extra.TAG";
 
-    private static final String TAG = "MyIntentService";
+    private static final int SLEEP_TIME = 1;
 
     public MyIntentService() {
         super("MyIntentService");
     }
 
 
-    public static void startDownload(Context context, int second) {
+    public static void startDownload(Context context, int second,int tag) {
         Intent intent = new Intent(context, MyIntentService.class);
-        intent.setAction(ACTION_DOWNLOAD);
+        intent.setAction(ACTION_COUNTER);
         intent.putExtra(EXTRA_SEC,second);
+        intent.putExtra(EXTRA_TAG,tag);
         context.startService(intent);
     }
 
@@ -35,21 +35,21 @@ public class MyIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_DOWNLOAD.equals(action)) {
-                final int param1 = intent.getIntExtra(EXTRA_SEC, 10);
-                handleActionFoo(param1);
+            if (ACTION_COUNTER.equals(action)) {
+                final int second = intent.getIntExtra(EXTRA_SEC, 0);
+                final int tag = intent.getIntExtra(EXTRA_TAG,0);
+                handleActionFoo(second,tag);
             }
         }
     }
 
-    private void handleActionFoo(int sec) {
-
-        Progress progress = new Progress(0);
+    private void handleActionFoo(int sec,int tag) {
         int millis = sec * 1000;
-        for (int i = 0;i <= millis; i+=SLEEP_TIME){
-            progress.progress = i;
-            EventBus.getDefault().post(progress);
-            Log.d(TAG,String.valueOf(i));
+        Counter counter = new Counter(0,tag);
+
+        for (int i = millis;i >= 0; i-=SLEEP_TIME){
+            counter.progress = i;
+            EventBus.getDefault().post(counter);
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
