@@ -3,6 +3,7 @@ package com.example.ljd.intentservice;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,7 +27,7 @@ public class MyIntentService extends IntentService {
     public static void startDownload(Context context, int second,int tag) {
         Intent intent = new Intent(context, MyIntentService.class);
         intent.setAction(ACTION_COUNTER);
-        intent.putExtra(EXTRA_SEC,second);
+        intent.putExtra(EXTRA_SEC, second);
         intent.putExtra(EXTRA_TAG,tag);
         context.startService(intent);
     }

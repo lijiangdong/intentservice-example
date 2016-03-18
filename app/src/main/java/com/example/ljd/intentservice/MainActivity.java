@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.add_btn:
-                //生成2~5之间的随机数
+                //生成1~3之间的随机数
                 Random random = new Random();
                 int num = random.nextInt(3)%(3) + 1;
 
